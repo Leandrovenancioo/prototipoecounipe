@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoCiclo — Consumo e Produção Responsáveis (ODS 12)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Biblioteca QRCode.js para gerar QR Code dinâmico -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .tab-active {
+      border-bottom: 3px solid #059669;
+      color: #065f46;
+      font-weight: 600;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Animação suave das barras do gráfico */
+    .bar-fill {
+      transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1), height 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+
+  <!-- Cabeçalho / Navegação -->
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-md">
+            <i class="fa-solid fa-recycle text-lg"></i>
+          </div>
+          <div>
+            <span class="font-bold text-lg tracking-tight text-stone-900 block leading-none">EcoCiclo</span>
+            <span class="text-[11px] font-medium text-emerald-700 uppercase tracking-wider">ODS 12 • ONU</span>
+          </div>
+        </div>
+
+        <!-- Menu Desktop -->
+        <nav class="hidden md:flex items-center space-x-5 text-sm font-medium text-stone-600">
+          <button onclick="switchTab('calculadora')" id="nav-calculadora" class="tab-btn tab-active py-5 transition-colors hover:text-emerald-700">
+            <i class="fa-solid fa-calculator mr-1.5"></i>Calculadora 5 Rs
+          </button>
+          <button onclick="switchTab('economia')" id="nav-economia" class="tab-btn py-5 transition-colors hover:text-emerald-700">
+            <i class="fa-solid fa-arrows-spin mr-1.5"></i>Economia Circular
+          </button>
+          <button onclick="switchTab('descarte')" id="nav-descarte" class="tab-btn py-5 transition-colors hover:text-emerald-700">
+            <i class="fa-solid fa-trash-can-arrow-up mr-1.5"></i>Guia de Descarte
+          </button>
+          <button onclick="switchTab('empresas')" id="nav-empresas" class="tab-btn py-5 transition-colors hover:text-emerald-700">
+            <i class="fa-solid fa-industry mr-1.5"></i>Produção Verde
+          </button>
+          <button onclick="switchTab('quizturma')" id="nav-quizturma" class="tab-btn py-5 transition-colors hover:text-emerald-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-qrcode text-emerald-600"></i>
+            <span>Quiz da Turma</span>
+            <span class="px-1.5 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded-full">AO VIVO</span>
+          </button>
+        </nav>
+
+        <!-- Botão Metas -->
+        <div class="flex items-center gap-2">
+          <button onclick="toggleModal('modal-metas')" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Metas 2030</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Menu Mobile (Abas horizontais) -->
+      <div class="flex md:hidden overflow-x-auto space-x-4 border-t border-stone-100 text-xs font-medium text-stone-600 no-scrollbar">
+        <button onclick="switchTab('calculadora')" id="mob-calculadora" class="tab-btn-mob tab-active py-3 whitespace-nowrap px-2">Calculadora 5 Rs</button>
+        <button onclick="switchTab('economia')" id="mob-economia" class="tab-btn-mob py-3 whitespace-nowrap px-2">Economia Circular</button>
+        <button onclick="switchTab('descarte')" id="mob-descarte" class="tab-btn-mob py-3 whitespace-nowrap px-2">Guia de Descarte</button>
+        <button onclick="switchTab('empresas')" id="mob-empresas" class="tab-btn-mob py-3 whitespace-nowrap px-2">Produção Verde</button>
+        <button onclick="switchTab('quizturma')" id="mob-quizturma" class="tab-btn-mob py-3 whitespace-nowrap px-2 font-bold text-emerald-700">
+          <i class="fa-solid fa-qrcode mr-1"></i>Quiz da Turma
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner Hero Compacto -->
+  <section id="hero-banner" class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white py-10 sm:py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-3 max-w-2xl">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-700/60 border border-emerald-500/40 text-emerald-100 text-xs font-medium">
+          <i class="fa-solid fa-leaf text-amber-400"></i> Protótipo Interativo de Sustentabilidade
+        </span>
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+          Consumo Consciente e Produção Circular na Prática
+        </h1>
+        <p class="text-emerald-100/90 text-sm sm:text-base leading-relaxed">
+          Explore ferramentas interativas para avaliar seus hábitos de consumo, entender a transição da economia linear para a circular e participar do Quiz ao vivo com a turma.
+        </p>
+      </div>
+      <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 w-full md:w-72 shrink-0">
+        <div class="text-xs uppercase tracking-wider text-emerald-200 font-semibold mb-1">Atividade em Sala</div>
+        <div class="text-xl font-extrabold text-amber-400 flex items-center gap-2">
+          <i class="fa-solid fa-qrcode"></i> Quiz da Turma
+        </div>
+        <p class="text-xs text-emerald-50 mt-1 leading-relaxed">
+          Escaneie o QR Code na aba <strong>Quiz da Turma</strong> para responder às 5 questões e acompanhar o gráfico em tempo real.
+        </p>
+        <button onclick="switchTab('quizturma')" class="mt-3 w-full py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-colors">
+          Abrir Painel QR & Gráfico
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conteúdo Principal -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+
+    <!-- ========================================== -->
+    <!-- ABA 1: CALCULADORA DOS 5 Rs                -->
+    <!-- ========================================== -->
+    <section id="tab-calculadora" class="tab-content space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-stone-900">Calculadora de Consumo Consciente (5 Rs)</h2>
+          <p class="text-stone-600 text-sm mt-1">Marque as práticas que você já adota no dia a dia para avaliar seu índice sustentável.</p>
+        </div>
+        <button onclick="resetChecklist()" class="self-start sm:self-auto text-xs font-medium text-stone-500 hover:text-stone-800 px-3 py-2 rounded-lg border border-stone-300 bg-white">
+          <i class="fa-solid fa-rotate-left mr-1"></i>Limpar seleção
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Lista de Hábitos -->
+        <div class="lg:col-span-2 space-y-4" id="checklist-container">
+          <!-- Renderizado via JS -->
+        </div>
+
+        <!-- Painel de Resultado -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm sticky top-24 space-y-6">
+            <div class="text-center space-y-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-stone-400">Seu Índice Sustentável</span>
+              <div class="relative inline-flex items-center justify-center">
+                <svg class="w-32 h-32 transform -rotate-90">
+                  <circle cx="64" cy="64" r="56" stroke="#e7e5e4" stroke-width="10" fill="transparent" />
+                  <circle id="score-circle" cx="64" cy="64" r="56" stroke="#059669" stroke-width="10" fill="transparent"
+                          stroke-dasharray="351.8" stroke-dashoffset="351.8" stroke-linecap="round" class="transition-all duration-500" />
+                </svg>
+                <span id="score-percent" class="absolute text-3xl font-extrabold text-stone-900">0%</span>
+              </div>
+              <h3 id="score-title" class="text-lg font-bold text-stone-800">Iniciante Consciente</h3>
+              <p id="score-desc" class="text-xs text-stone-500 leading-relaxed">
+                Comece marcando os hábitos ao lado para descobrir seu perfil de consumo e receber recomendações.
+              </p>
+            </div>
+
+            <!-- Próximo Passo Recomendado -->
+            <div class="bg-amber-50 border border-amber-200/80 rounded-xl p-4 space-y-1.5">
+              <div class="flex items-center gap-2 text-amber-800 font-semibold text-xs">
+                <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                <span>Dica Prática Sugerida:</span>
+              </div>
+              <p id="next-tip" class="text-xs text-amber-900/80 leading-relaxed">
+                Antes de comprar algo novo, pergunte-se: "Eu realmente preciso disso agora ou posso reutilizar algo que já tenho?"
+              </p>
+            </div>
+
+            <!-- Impacto Anual Estimado -->
+            <div class="bg-emerald-50/80 border border-emerald-200 rounded-xl p-4 space-y-2.5">
+              <div class="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-earth-americas text-emerald-600"></i>
+                <span>Impacto Anual Estimado:</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="bg-white rounded-lg p-2 border border-emerald-100">
+                  <span id="impact-water" class="block text-sm font-extrabold text-sky-700">0 L</span>
+                  <span class="text-[10px] text-stone-500">Água poupada</span>
+                </div>
+                <div class="bg-white rounded-lg p-2 border border-emerald-100">
+                  <span id="impact-co2" class="block text-sm font-extrabold text-emerald-700">0 kg</span>
+                  <span class="text-[10px] text-stone-500">CO₂ evitado</span>
+                </div>
+                <div class="bg-white rounded-lg p-2 border border-emerald-100">
+                  <span id="impact-plastic" class="block text-sm font-extrabold text-amber-600">0 un</span>
+                  <span class="text-[10px] text-stone-500">Descartáveis</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ABA 2: ECONOMIA LINEAR VS CIRCULAR         -->
+    <!-- ========================================== -->
+    <section id="tab-economia" class="tab-content hidden space-y-8">
+      <div class="border-b border-stone-200 pb-4">
+        <h2 class="text-2xl font-bold text-stone-900">Simulador: Economia Linear vs. Circular</h2>
+        <p class="text-stone-600 text-sm mt-1">Alterne entre os dois modelos econômicos e escolha um produto para comparar seu ciclo de vida.</p>
+      </div>
+
+      <!-- Seletor de Modelo e Produto -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="bg-stone-200/80 p-1.5 rounded-2xl inline-flex gap-1">
+          <button onclick="setEconomyMode('linear')" id="btn-linear" class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all bg-white text-rose-700 shadow-sm">
+            <i class="fa-solid fa-arrow-right-long mr-2"></i>Modelo Linear
+          </button>
+          <button onclick="setEconomyMode('circular')" id="btn-circular" class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all text-stone-600 hover:text-stone-900">
+            <i class="fa-solid fa-arrows-spin mr-2"></i>Modelo Circular
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-stone-200 shadow-sm">
+          <span class="text-xs font-semibold text-stone-500">Exemplo prático:</span>
+          <select id="economy-product-select" onchange="setEconomyMode(currentEconomyMode)" class="text-xs font-bold text-emerald-800 bg-transparent focus:outline-none cursor-pointer">
+            <option value="geral">Visão Geral da Cadeia</option>
+            <option value="smartphone">Smartphone & Eletrônicos</option>
+            <option value="roupa">Camiseta (Indústria Têxtil)</option>
+            <option value="garrafa">Embalagem Plástica / Vidro</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Visualização Interativa -->
+      <div id="economy-display" class="bg-white rounded-2xl border border-stone-200 p-6 sm:p-8 shadow-sm transition-all">
+        <!-- Preenchido via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ABA 3: GUIA INTELIGENTE DE DESCARTE        -->
+    <!-- ========================================== -->
+    <section id="tab-descarte" class="tab-content hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-stone-900">Guia Inteligente de Descarte</h2>
+          <p class="text-stone-600 text-sm mt-1">Pesquise um item, filtre por categoria ou teste seus conhecimentos no desafio rápido.</p>
+        </div>
+        <button onclick="startWasteQuiz()" class="self-start sm:self-auto px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-sm flex items-center gap-2 transition-colors">
+          <i class="fa-solid fa-gamepad"></i>
+          <span>Desafio Rápido de Descarte</span>
+        </button>
+      </div>
+
+      <!-- Mini Quiz Interativo (Oculto por padrão) -->
+      <div id="waste-quiz-box" class="hidden bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-1 rounded-full bg-amber-200/80 text-amber-900 text-xs font-bold">
+            <i class="fa-solid fa-bolt mr-1"></i>Desafio ODS 12 • Pergunta <span id="quiz-step">1/3</span>
+          </span>
+          <button onclick="closeWasteQuiz()" class="text-xs text-stone-500 hover:text-stone-800 font-medium">Fechar desafio</button>
+        </div>
+        <h3 id="quiz-question" class="text-base sm:text-lg font-bold text-stone-900">Pergunta</h3>
+        <div id="quiz-options" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+        <p id="quiz-feedback" class="text-xs font-medium hidden"></p>
+      </div>
+
+      <!-- Barra de Busca e Filtros -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-stone-400 text-sm"></i>
+          <input type="text" id="waste-search" onkeyup="filterWaste()" placeholder="Ex: pilha, óleo de cozinha, isopor, celular, casca de fruta..."
+                 class="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="setWasteCategory('todos')" data-cat="todos" class="waste-cat-btn px-4 py-1.5 rounded-full text-xs font-semibold bg-emerald-600 text-white transition-colors">Todos</button>
+          <button onclick="setWasteCategory('reciclavel')" data-cat="reciclavel" class="waste-cat-btn px-4 py-1.5 rounded-full text-xs font-semibold bg-stone-200 text-stone-700 hover:bg-stone-300 transition-colors">Recicláveis</button>
+          <button onclick="setWasteCategory('especial')" data-cat="especial" class="waste-cat-btn px-4 py-1.5 rounded-full text-xs font-semibold bg-stone-200 text-stone-700 hover:bg-stone-300 transition-colors">Logística Reversa</button>
+          <button onclick="setWasteCategory('organico')" data-cat="organico" class="waste-cat-btn px-4 py-1.5 rounded-full text-xs font-semibold bg-stone-200 text-stone-700 hover:bg-stone-300 transition-colors">Orgânicos</button>
+        </div>
+      </div>
+
+      <!-- Grid de Resíduos -->
+      <div id="waste-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Renderizado via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ABA 4: PRODUÇÃO VERDE (EMPRESAS)           -->
+    <!-- ========================================== -->
+    <section id="tab-empresas" class="tab-content hidden space-y-8">
+      <div class="border-b border-stone-200 pb-4">
+        <h2 class="text-2xl font-bold text-stone-900">Pilares da Produção Responsável</h2>
+        <p class="text-stone-600 text-sm mt-1">Como indústrias e negócios transformam suas cadeias produtivas para cumprir o ODS 12.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-3 hover:border-emerald-300 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-compass-drafting"></i>
+          </div>
+          <h3 class="text-lg font-bold text-stone-900">1. Ecodesign & Embalagens</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">
+            Projetar produtos desde a concepção para usar menos matéria-prima, eliminar plásticos de uso único, facilitar a desmontagem e priorizar materiais reciclados ou biodegradáveis.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-3 hover:border-emerald-300 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-truck-ramp-box"></i>
+          </div>
+          <h3 class="text-lg font-bold text-stone-900">2. Logística Reversa</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">
+            Responsabilizar-se pelo pós-consumo, criando pontos de coleta para que embalagens, eletrônicos, baterias e pneus retornem à fábrica como insumos para novos ciclos.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-3 hover:border-emerald-300 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-solar-panel"></i>
+          </div>
+          <h3 class="text-lg font-bold text-stone-900">3. Eficiência Hídrica e Energética</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">
+            Substituir matrizes fósseis por energia solar ou eólica, implementar sistemas de reuso de água industrial e reduzir a pegada de carbono em toda a cadeia logística.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-3 hover:border-emerald-300 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+          <h3 class="text-lg font-bold text-stone-900">4. Rastreabilidade e Transparência</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">
+            Adotar certificações ambientais confiáveis, publicar relatórios anuais de sustentabilidade (ESG) e combater o <em>greenwashing</em> com dados auditáveis ao consumidor.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ABA 5: QUIZ DA TURMA (QR CLOUD + GRÁFICO)  -->
+    <!-- ========================================== -->
+    <section id="tab-quizturma" class="tab-content hidden space-y-8">
+      <!-- Cabeçalho da Seção e Alternador de Modo (Professor vs Aluno) -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-2xl font-bold text-stone-900">Quiz da Turma em Nuvem (5 Questões)</h2>
+            <span id="cloud-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+              <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Conectando...
+            </span>
+          </div>
+          <p class="text-stone-600 text-sm mt-1">Compartilhe o QR Code com a turma, acompanhe o gráfico de acertos ao vivo e salve os resultados no PC.</p>
+        </div>
+
+        <!-- Seletor de Visão -->
+        <div class="bg-stone-200/80 p-1.5 rounded-2xl inline-flex gap-1 self-start md:self-auto">
+          <button onclick="setQuizView('dashboard')" id="btn-view-dashboard" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all bg-white text-emerald-700 shadow-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-chart-column"></i> Painel & QR Code
+          </button>
+          <button onclick="setQuizView('student')" id="btn-view-student" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all text-stone-600 hover:text-stone-900 flex items-center gap-1.5">
+            <i class="fa-solid fa-mobile-screen-button"></i> Responder Quiz (Aluno)
+          </button>
+        </div>
+      </div>
+
+      <!-- ===================================== -->
+      <!-- VISÃO 1: PAINEL DO PROFESSOR (QR + GRÁFICO + EXPORTAR PC) -->
+      <!-- ===================================== -->
+      <div id="quiz-dashboard-view" class="space-y-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Cartão do QR Code e Link da Turma (4 colunas) -->
+          <div class="lg:col-span-4 bg-white rounded-2xl border border-stone-200 p-6 shadow-sm flex flex-col items-center text-center justify-between space-y-5">
+            <div class="space-y-1">
+              <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
+                Acesso Rápido
+              </span>
+              <h3 class="text-lg font-bold text-stone-900 pt-1">QR Code da Turma</h3>
+              <p class="text-xs text-stone-500">Peça para os alunos apontarem a câmera do celular para responder às 5 questões.</p>
+            </div>
+
+            <!-- Container do QR Code -->
+            <div class="p-4 bg-white border-2 border-emerald-500/30 rounded-2xl shadow-inner flex items-center justify-center">
+              <div id="qrcode-container"></div>
+            </div>
+
+            <!-- Alerta de Link Local / Configuração de Link Público -->
+            <div id="qr-url-warning" class="hidden w-full text-left bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-1.5">
+              <div class="flex items-center gap-1.5 text-amber-800 font-bold text-[11px]">
+                <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+                <span>Link de pré-visualização detectado</span>
+              </div>
+              <p class="text-[11px] text-amber-900/80 leading-snug">
+                Para os celulares abrirem fora deste computador, cole abaixo o link público onde você hospedou o arquivo (ex: GitHub Pages, Vercel, Netlify ou IP da rede Wi-Fi):
+              </p>
+            </div>
+
+            <!-- Campo para personalizar/colar o Link Público da Turma -->
+            <div class="w-full text-left space-y-1.5">
+              <label for="custom-qr-url" class="block text-[11px] font-bold text-stone-600">
+                Link do QR Code para os Alunos:
+              </label>
+              <div class="flex gap-1.5">
+                <input type="text" id="custom-qr-url" oninput="updateCustomQRCode()" placeholder="https://seu-link.com/ecociclo.html"
+                       class="flex-1 min-w-0 px-2.5 py-2 rounded-xl border border-stone-300 text-xs bg-stone-50 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <button onclick="resetDefaultQRCode()" title="Restaurar link atual" class="px-2.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs border border-stone-200">
+                  <i class="fa-solid fa-rotate-left"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Código da Sala e Copiar Link -->
+            <div class="w-full space-y-2.5">
+              <div class="flex items-center justify-between bg-stone-100 px-3 py-2 rounded-xl border border-stone-200 text-xs">
+                <span class="text-stone-500 font-medium">Sala Ativa:</span>
+                <span id="room-code-label" class="font-mono font-bold text-emerald-800">TURMA-ODS12</span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="copyQuizLink()" class="py-2.5 px-3 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-link"></i> Copiar Link
+                </button>
+                <button onclick="setQuizView('student')" class="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-pen-to-square"></i> Responder Aqui
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráfico de Acertos por Questão em Tempo Real (8 colunas) -->
+          <div class="lg:col-span-8 bg-white rounded-2xl border border-stone-200 p-6 shadow-sm flex flex-col justify-between space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-100 pb-4">
+              <div>
+                <h3 class="text-lg font-bold text-stone-900 flex items-center gap-2">
+                  <i class="fa-solid fa-chart-simple text-emerald-600"></i>
+                  Gráfico de Acertos por Questão
+                </h3>
+                <p class="text-xs text-stone-500">Atualização automática conforme os alunos enviam as respostas na nuvem.</p>
+              </div>
+
+              <!-- KPIs Rápidos -->
+              <div class="flex items-center gap-3">
+                <div class="bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-xl text-center">
+                  <span id="stat-total-students" class="block text-xl font-extrabold text-emerald-800 leading-none">0</span>
+                  <span class="text-[10px] font-semibold text-emerald-700 uppercase">Alunos</span>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 px-3.5 py-2 rounded-xl text-center">
+                  <span id="stat-avg-score" class="block text-xl font-extrabold text-amber-700 leading-none">0%</span>
+                  <span class="text-[10px] font-semibold text-amber-700 uppercase">Média Geral</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Barras do Gráfico (5 Questões) -->
+            <div id="accuracy-chart-container" class="space-y-4 py-2">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
+
+            <!-- Barra de Ações: Guardar Respostas no PC + Nova Turma -->
+            <div class="pt-4 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <button onclick="downloadResultsCSV()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all flex items-center gap-2">
+                  <i class="fa-solid fa-file-csv text-sm"></i>
+                  <span>Guardar Planilha no PC (.CSV)</span>
+                </button>
+                <button onclick="downloadResultsJSON()" class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 text-xs font-bold transition-all flex items-center gap-2">
+                  <i class="fa-solid fa-file-code text-sm"></i>
+                  <span>Backup (.JSON)</span>
+                </button>
+              </div>
+
+              <button onclick="confirmClearClassData()" class="px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-trash-can"></i> Zerar Turma
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela Detalhada de Respostas da Turma -->
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between">
+            <h3 class="font-bold text-stone-900 text-base">Respostas Recebidas da Turma</h3>
+            <span class="text-xs text-stone-500">Ordem de envio mais recente</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-stone-50 border-b border-stone-200 text-[11px] font-bold uppercase tracking-wider text-stone-500">
+                  <th class="py-3 px-4">Aluno(a)</th>
+                  <th class="py-3 px-4 text-center">Q1</th>
+                  <th class="py-3 px-4 text-center">Q2</th>
+                  <th class="py-3 px-4 text-center">Q3</th>
+                  <th class="py-3 px-4 text-center">Q4</th>
+                  <th class="py-3 px-4 text-center">Q5</th>
+                  <th class="py-3 px-4 text-right">Acertos</th>
+                </tr>
+              </thead>
+              <tbody id="responses-table-body" class="divide-y divide-stone-100 text-sm">
+                <tr>
+                  <td colspan="7" class="py-8 text-center text-stone-400 text-xs">
+                    Nenhuma resposta enviada ainda. Compartilhe o QR Code ou clique em "Responder Aqui" para testar!
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================== -->
+      <!-- VISÃO 2: FORMULÁRIO DO ALUNO (5 QUESTÕES) -->
+      <!-- ===================================== -->
+      <div id="quiz-student-view" class="hidden max-w-2xl mx-auto">
+        <div id="student-quiz-card" class="bg-white rounded-2xl border border-stone-200 p-6 sm:p-8 shadow-sm space-y-6">
+          <div class="border-b border-stone-100 pb-4 space-y-1">
+            <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+              Avaliação Interativa • ODS 12
+            </span>
+            <h3 class="text-xl font-bold text-stone-900 pt-1">Responda às 5 Questões</h3>
+            <p class="text-xs text-stone-500">Suas respostas serão enviadas em tempo real para o gráfico da turma.</p>
+          </div>
+
+          <!-- Identificação do Aluno -->
+          <div class="space-y-2">
+            <label for="student-name-input" class="block text-xs font-bold uppercase tracking-wider text-stone-700">
+              Seu Nome ou Apelido <span class="text-rose-500">*</span>
+            </label>
+            <input type="text" id="student-name-input" placeholder="Digite seu nome completo ou apelido..."
+                   class="w-full px-4 py-3 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50">
+          </div>
+
+          <!-- Container das 5 Questões -->
+          <div id="student-questions-list" class="space-y-6">
+            <!-- Renderizado via JS -->
+          </div>
+
+          <!-- Botão Enviar -->
+          <div class="pt-2">
+            <button id="btn-submit-quiz" onclick="submitStudentQuiz()" class="w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>Enviar Respostas para a Turma</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tela de Resultado Pós-Envio do Aluno -->
+        <div id="student-result-card" class="hidden bg-white rounded-2xl border border-emerald-200 p-6 sm:p-8 shadow-sm text-center space-y-6">
+          <div class="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mx-auto">
+            <i class="fa-solid fa-award"></i>
+          </div>
+          <div class="space-y-1">
+            <h3 class="text-2xl font-extrabold text-stone-900">Respostas Registradas!</h3>
+            <p id="student-result-subtitle" class="text-sm text-stone-600">Você acertou X de 5 questões.</p>
+          </div>
+
+          <!-- Gabarito Comentado para o Aluno -->
+          <div id="student-review-list" class="text-left space-y-3 bg-stone-50 p-4 rounded-xl border border-stone-200">
+            <!-- Renderizado via JS -->
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <button onclick="setQuizView('dashboard')" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm">
+              <i class="fa-solid fa-chart-column mr-1.5"></i>Ver Gráfico da Turma
+            </button>
+            <button onclick="resetStudentForm()" class="px-5 py-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold">
+              Responder Novamente
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="bg-white border-t border-stone-200 mt-12 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-earth-americas text-emerald-600 text-base"></i>
+        <span>Protótipo Educacional • Objetivo de Desenvolvimento Sustentável 12 (Agenda 2030)</span>
+      </div>
+      <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-right">
+        <span class="font-semibold text-stone-700">Equipe: Leandro, Guilherme, Neto, Kauã</span>
+        <span class="hidden sm:inline text-stone-300">•</span>
+        <span>EcoCiclo © 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal: Metas Globais ODS 12 -->
+  <div id="modal-metas" class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold">
+            12
+          </div>
+          <div>
+            <h3 class="font-bold text-stone-900 text-lg">Metas da Agenda 2030</h3>
+            <p class="text-xs text-stone-500">Consumo e Produção Responsáveis</p>
+          </div>
+        </div>
+        <button onclick="toggleModal('modal-metas')" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-600">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <ul class="space-y-3 text-sm text-stone-700">
+        <li class="flex items-start gap-3">
+          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-xs mt-0.5">12.2</span>
+          <span>Alcançar a gestão sustentável e o uso eficiente dos recursos naturais até 2030.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-xs mt-0.5">12.3</span>
+          <span>Reduzir pela metade o desperdício de alimentos per capita mundial no varejo e no consumo.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-xs mt-0.5">12.5</span>
+          <span>Reduzir substancialmente a geração de resíduos por meio da prevenção, redução, reciclagem e reuso.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-xs mt-0.5">12.6</span>
+          <span>Incentivar empresas a adotar práticas sustentáveis e integrar informações de sustentabilidade em seus relatórios.</span>
+        </li>
+      </ul>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="toggleModal('modal-metas')" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold">
+          Entendi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmação Customizado (Substitui confirm()) -->
+  <div id="modal-confirm-clear" class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center gap-3 text-rose-600">
+        <div class="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="font-bold text-stone-900 text-lg">Zerar respostas da turma?</h3>
+      </div>
+      <p class="text-sm text-stone-600 leading-relaxed">
+        Isso apagará todas as respostas registradas na nuvem para esta turma. Recomendamos clicar em <strong>"Guardar Planilha no PC"</strong> antes de zerar.
+      </p>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="toggleModal('modal-confirm-clear')" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold">
+          Cancelar
+        </button>
+        <button onclick="executeClearClassData()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">
+          Sim, Zerar Turma
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de Notificação (Substitui alert) -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-stone-900 text-white px-5 py-3 rounded-xl shadow-xl text-sm flex items-center gap-3">
+    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toast-msg">Ação realizada com sucesso!</span>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- SCRIPT PRINCIPAL + INTEGRAÇÃO NUVEM        -->
+  <!-- ========================================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // ==========================================
+    // 1. AS 5 QUESTÕES DO QUIZ DA TURMA (DESCARTE SIMPLES)
+    // ==========================================
+    const classQuizQuestions = [
+      {
+        id: "q1",
+        shortLabel: "Q1 • Garrafa PET",
+        question: "Em qual lixeira da coleta seletiva devemos jogar uma garrafa PET vazia?",
+        options: [
+          "Lixeira Azul (Papel)",
+          "Lixeira Vermelha (Plástico)",
+          "Lixeira Verde (Vidro)"
+        ],
+        correct: 1,
+        explanation: "A lixeira vermelha é destinada aos plásticos, como garrafas PET, potes e embalagens plásticas limpas."
+      },
+      {
+        id: "q2",
+        shortLabel: "Q2 • Óleo de Cozinha",
+        question: "O que fazer com o óleo de cozinha usado depois que ele esfria?",
+        options: [
+          "Jogar direto no ralo da pia",
+          "Guardar em uma garrafa PET e levar a um ponto de coleta",
+          "Jogar no quintal ou na terra"
+        ],
+        correct: 1,
+        explanation: "O óleo entope encanamentos e contamina a água. Em pontos de coleta, ele vira sabão ou biodiesel."
+      },
+      {
+        id: "q3",
+        shortLabel: "Q3 • Pilhas e Baterias",
+        question: "Onde devemos descartar pilhas velhas e baterias de celular?",
+        options: [
+          "No lixo comum da cozinha",
+          "Em coletores especiais de supermercados, lojas ou ecopontos",
+          "Na lixeira amarela de metal"
+        ],
+        correct: 1,
+        explanation: "Pilhas e baterias têm substâncias tóxicas e precisam ser entregues em pontos de coleta específicos."
+      },
+      {
+        id: "q4",
+        shortLabel: "Q4 • Restos de Frutas",
+        question: "Cascas de frutas, restos de legumes e borra de café pertencem a qual tipo de lixo?",
+        options: [
+          "Lixo Orgânico (pode virar adubo)",
+          "Lixo Reciclável Plástico",
+          "Lixo Eletrônico"
+        ],
+        correct: 0,
+        explanation: "Restos de alimentos são resíduos orgânicos e podem ser reaproveitados na compostagem para fazer adubo."
+      },
+      {
+        id: "q5",
+        shortLabel: "Q5 • Caixa de Pizza Suja",
+        question: "Uma caixa de papelão muito engordurada com restos de pizza deve ir para:",
+        options: [
+          "Lixeira Azul (Papel reciclável)",
+          "Lixo Orgânico / Rejeito (comum)",
+          "Lixeira Amarela (Metal)"
+        ],
+        correct: 1,
+        explanation: "Papel sujo com gordura ou comida não pode ser reciclado, pois estraga os outros papéis limpos."
+      }
+    ];
+
+    // Estado global do Quiz da Turma
+    let db = null;
+    let auth = null;
+    let currentUser = null;
+    let appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    let classResponses = [];
+    let studentAnswers = {}; // { q1: 0, q2: 1, ... }
+    let isCloudConnected = false;
+
+    // ==========================================
+    // 2. INICIALIZAÇÃO DO FIREBASE (NUVEM)
+    // ==========================================
+    async function initCloudQuiz() {
+      const badge = document.getElementById('cloud-status-badge');
+      try {
+        if (typeof __firebase_config === 'undefined') {
+          throw new Error("Configuração de nuvem não detectada.");
+        }
+
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+
+        // Regra 3: Autenticar ANTES de qualquer consulta ao Firestore
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+
+        currentUser = auth.currentUser;
+        if (!currentUser) return;
+
+        isCloudConnected = true;
+        badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800";
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Nuvem Ativa`;
+
+        // Regra 1 & 2: Caminho estrito público sem orderBy/where complexo
+        const responsesCol = collection(db, 'artifacts', appId, 'public', 'data', 'ecociclo_quiz_responses');
+        onSnapshot(
+          responsesCol,
+          (snapshot) => {
+            const items = [];
+            snapshot.forEach((docSnap) => {
+              items.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            // Ordenar em memória pelo timestamp decrescente
+            items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            classResponses = items;
+            renderClassDashboard();
+          },
+          (error) => {
+            console.error("Erro ao sincronizar respostas:", error);
+            badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800";
+            badge.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Modo Local`;
+          }
+        );
+      } catch (err) {
+        console.warn("Rodando em modo local de demonstração:", err);
+        badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800";
+        badge.innerHTML = `<i class="fa-solid fa-laptop"></i> Modo Local (PC)`;
+        renderClassDashboard();
+      }
+    }
+
+    // ==========================================
+    // 3. QR CODE DINÂMICO E NAVEGAÇÃO DO QUIZ
+    // ==========================================
+    function getDefaultStudentUrl() {
+      const currentHref = window.location.href;
+      // Verifica se está rodando em sandbox/iframe interno (about:srcdoc, blob:, file:)
+      if (currentHref.startsWith('about:') || currentHref.startsWith('blob:') || currentHref.startsWith('file:')) {
+        return "";
+      }
+      const baseUrl = currentHref.split('?')[0];
+      return `${baseUrl}?modo=aluno`;
+    }
+
+    function renderQRCodeFromText(urlText) {
+      const container = document.getElementById('qrcode-container');
+      if (!container) return;
+      container.innerHTML = "";
+
+      const targetText = urlText && urlText.trim() !== ""
+        ? urlText.trim()
+        : "https://ecociclo-ods12.app/?modo=aluno";
+
+      try {
+        new QRCode(container, {
+          text: targetText,
+          width: 176,
+          height: 176,
+          colorDark: "#064e3b",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } catch (e) {
+        container.innerHTML = `<div class="p-4 text-xs text-stone-500">QR Code pronto para compartilhamento</div>`;
+      }
+    }
+
+    function generateClassQRCode() {
+      const defaultUrl = getDefaultStudentUrl();
+      const inputEl = document.getElementById('custom-qr-url');
+      const warningEl = document.getElementById('qr-url-warning');
+
+      if (!defaultUrl) {
+        // Está em iframe local/srcdoc: mostra aviso e deixa campo pronto para colar o link hospedado
+        if (warningEl) warningEl.classList.remove('hidden');
+        if (inputEl) inputEl.value = "";
+        renderQRCodeFromText("");
+      } else {
+        if (warningEl) warningEl.classList.add('hidden');
+        if (inputEl) inputEl.value = defaultUrl;
+        renderQRCodeFromText(defaultUrl);
+      }
+    }
+
+    window.updateCustomQRCode = function() {
+      const inputEl = document.getElementById('custom-qr-url');
+      const warningEl = document.getElementById('qr-url-warning');
+      let val = inputEl ? inputEl.value.trim() : "";
+
+      if (val && !val.includes('modo=aluno')) {
+        const separator = val.includes('?') ? '&' : '?';
+        val = `${val}${separator}modo=aluno`;
+      }
+
+      if (val && warningEl) {
+        warningEl.classList.add('hidden');
+      }
+      renderQRCodeFromText(val);
+    };
+
+    window.resetDefaultQRCode = function() {
+      generateClassQRCode();
+      showToast("Link padrão restaurado.");
+    };
+
+    window.copyQuizLink = function() {
+      const inputEl = document.getElementById('custom-qr-url');
+      let studentUrl = inputEl && inputEl.value.trim() !== ""
+        ? inputEl.value.trim()
+        : getDefaultStudentUrl();
+
+      if (!studentUrl) {
+        showToast("Cole primeiro o link público onde o arquivo está hospedado!");
+        if (inputEl) inputEl.focus();
+        return;
+      }
+
+      if (!studentUrl.includes('modo=aluno')) {
+        const separator = studentUrl.includes('?') ? '&' : '?';
+        studentUrl = `${studentUrl}${separator}modo=aluno`;
+      }
+
+      // Uso seguro de execCommand('copy') para compatibilidade em iframes
+      const tempInput = document.createElement("input");
+      tempInput.value = studentUrl;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand("copy");
+        showToast("Link do Quiz copiado! Cole no grupo da turma.");
+      } catch (err) {
+        showToast("Não foi possível copiar automaticamente.");
+      }
+      document.body.removeChild(tempInput);
+    };
+
+    window.setQuizView = function(view) {
+      const dashView = document.getElementById('quiz-dashboard-view');
+      const studView = document.getElementById('quiz-student-view');
+      const btnDash = document.getElementById('btn-view-dashboard');
+      const btnStud = document.getElementById('btn-view-student');
+
+      if (view === 'dashboard') {
+        dashView.classList.remove('hidden');
+        studView.classList.add('hidden');
+        btnDash.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all bg-white text-emerald-700 shadow-sm flex items-center gap-1.5";
+        btnStud.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all text-stone-600 hover:text-stone-900 flex items-center gap-1.5";
+        renderClassDashboard();
+      } else {
+        dashView.classList.add('hidden');
+        studView.classList.remove('hidden');
+        btnStud.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all bg-white text-emerald-700 shadow-sm flex items-center gap-1.5";
+        btnDash.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all text-stone-600 hover:text-stone-900 flex items-center gap-1.5";
+        renderStudentQuestions();
+      }
+    };
+
+    // ==========================================
+    // 4. FORMULÁRIO DO ALUNO (5 QUESTÕES)
+    // ==========================================
+    function renderStudentQuestions() {
+      const list = document.getElementById('student-questions-list');
+      list.innerHTML = classQuizQuestions.map((q, qIdx) => `
+        <div class="p-4 sm:p-5 rounded-2xl bg-stone-50 border border-stone-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-emerald-700 uppercase tracking-wider">Questão ${qIdx + 1} de 5</span>
+            <span id="status-${q.id}" class="text-[11px] font-medium ${studentAnswers[q.id] !== undefined ? 'text-emerald-600 font-bold' : 'text-stone-400'}">
+              ${studentAnswers[q.id] !== undefined ? 'Respondida ✓' : 'Pendente'}
+            </span>
+          </div>
+          <p class="text-sm sm:text-base font-bold text-stone-900 leading-snug">${q.question}</p>
+          <div class="space-y-2 pt-1">
+            ${q.options.map((opt, optIdx) => {
+              const isSelected = studentAnswers[q.id] === optIdx;
+              return `
+                <button type="button" onclick="selectStudentOption('${q.id}', ${optIdx})"
+                  class="w-full text-left p-3.5 rounded-xl border text-xs sm:text-sm transition-all flex items-start gap-3 ${
+                    isSelected
+                      ? 'bg-emerald-600 text-white border-emerald-700 font-semibold shadow-sm'
+                      : 'bg-white text-stone-700 border-stone-200 hover:border-emerald-400 hover:bg-emerald-50/40'
+                  }">
+                  <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                    isSelected ? 'bg-white text-emerald-700' : 'bg-stone-100 text-stone-600'
+                  }">
+                    ${String.fromCharCode(65 + optIdx)}
+                  </span>
+                  <span class="leading-snug pt-0.5">${opt}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.selectStudentOption = function(questionId, optionIndex) {
+      studentAnswers[questionId] = optionIndex;
+      renderStudentQuestions();
+    };
+
+    window.submitStudentQuiz = async function() {
+      const nameInput = document.getElementById('student-name-input');
+      const studentName = nameInput.value.trim();
+
+      if (!studentName) {
+        showToast("Por favor, digite seu nome antes de enviar.");
+        nameInput.focus();
+        return;
+      }
+
+      // Verifica se todas as 5 questões foram respondidas
+      const missing = classQuizQuestions.filter(q => studentAnswers[q.id] === undefined);
+      if (missing.length > 0) {
+        showToast(`Responda todas as 5 questões (faltam ${missing.length}).`);
+        return;
+      }
+
+      const submitBtn = document.getElementById('btn-submit-quiz');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Enviando para a nuvem...`;
+
+      // Calcula acertos
+      let score = 0;
+      const resultsMap = {};
+      classQuizQuestions.forEach(q => {
+        const isCorrect = studentAnswers[q.id] === q.correct;
+        if (isCorrect) score++;
+        resultsMap[q.id] = isCorrect;
+      });
+
+      const payload = {
+        studentName,
+        answers: { ...studentAnswers },
+        results: resultsMap,
+        score,
+        total: classQuizQuestions.length,
+        timestamp: Date.now(),
+        dateStr: new Date().toLocaleString('pt-BR')
+      };
+
+      try {
+        if (isCloudConnected && db && currentUser) {
+          const responsesCol = collection(db, 'artifacts', appId, 'public', 'data', 'ecociclo_quiz_responses');
+          await addDoc(responsesCol, payload);
+        } else {
+          // Fallback em memória caso offline
+          classResponses.unshift({ id: 'local-' + Date.now(), ...payload });
+          renderClassDashboard();
+        }
+
+        // Exibe gabarito individual para o aluno
+        document.getElementById('student-quiz-card').classList.add('hidden');
+        document.getElementById('student-result-card').classList.remove('hidden');
+        document.getElementById('student-result-subtitle').textContent =
+          `Parabéns, ${studentName}! Você acertou ${score} de ${classQuizQuestions.length} questões (${Math.round((score / 5) * 100)}%).`;
+
+        document.getElementById('student-review-list').innerHTML = classQuizQuestions.map((q, idx) => {
+          const userOpt = studentAnswers[q.id];
+          const ok = userOpt === q.correct;
+          return `
+            <div class="p-3 rounded-xl bg-white border ${ok ? 'border-emerald-200' : 'border-rose-200'} space-y-1">
+              <div class="flex items-center justify-between text-xs font-bold">
+                <span class="text-stone-800">Questão ${idx + 1}</span>
+                <span class="${ok ? 'text-emerald-600' : 'text-rose-600'}">
+                  ${ok ? '<i class="fa-solid fa-circle-check mr-1"></i>Acertou' : '<i class="fa-solid fa-circle-xmark mr-1"></i>Errou'}
+                </span>
+              </div>
+              <p class="text-xs text-stone-600">${q.explanation}</p>
+            </div>
+          `;
+        }).join('');
+
+        showToast("Respostas enviadas com sucesso!");
+      } catch (err) {
+        console.error("Erro ao salvar resposta:", err);
+        showToast("Erro ao enviar respostas. Tente novamente.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>Enviar Respostas para a Turma</span>`;
+      }
+    };
+
+    window.resetStudentForm = function() {
+      studentAnswers = {};
+      document.getElementById('student-name-input').value = "";
+      document.getElementById('student-result-card').classList.add('hidden');
+      document.getElementById('student-quiz-card').classList.remove('hidden');
+      renderStudentQuestions();
+    };
+
+    // ==========================================
+    // 5. GRÁFICO DE ACERTOS E TABELA DA TURMA
+    // ==========================================
+    function renderClassDashboard() {
+      const totalStudents = classResponses.length;
+      document.getElementById('stat-total-students').textContent = totalStudents;
+
+      // Média geral de acertos
+      let avgPct = 0;
+      if (totalStudents > 0) {
+        const sumScores = classResponses.reduce((acc, r) => acc + (r.score || 0), 0);
+        avgPct = Math.round((sumScores / (totalStudents * 5)) * 100);
+      }
+      document.getElementById('stat-avg-score').textContent = `${avgPct}%`;
+
+      // Renderizar Gráfico de Barras Horizontais de Acertos por Questão
+      const chartContainer = document.getElementById('accuracy-chart-container');
+      chartContainer.innerHTML = classQuizQuestions.map((q, idx) => {
+        let correctCount = 0;
+        if (totalStudents > 0) {
+          correctCount = classResponses.filter(r => r.results && r.results[q.id] === true).length;
+        }
+        const pct = totalStudents > 0 ? Math.round((correctCount / totalStudents) * 100) : 0;
+
+        // Cor dinâmica conforme taxa de acerto
+        let barColor = "bg-emerald-500";
+        if (totalStudents > 0 && pct < 50) barColor = "bg-rose-500";
+        else if (totalStudents > 0 && pct < 75) barColor = "bg-amber-500";
+
+        return `
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-stone-800 truncate pr-2" title="${q.question}">
+                ${q.shortLabel}
+              </span>
+              <span class="font-extrabold text-stone-700 shrink-0">
+                ${correctCount}/${totalStudents} acertos (${pct}%)
+              </span>
+            </div>
+            <div class="w-full h-4 bg-stone-100 rounded-full overflow-hidden border border-stone-200/80 p-0.5">
+              <div class="bar-fill h-full rounded-full ${barColor}" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Renderizar Tabela de Alunos
+      const tbody = document.getElementById('responses-table-body');
+      if (totalStudents === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-8 text-center text-stone-400 text-xs">
+              Nenhuma resposta enviada ainda. Compartilhe o QR Code ou clique em "Responder Aqui" para testar!
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = classResponses.map(resp => {
+        const badges = ['q1', 'q2', 'q3', 'q4', 'q5'].map(qKey => {
+          const ok = resp.results && resp.results[qKey];
+          return `
+            <td class="py-3 px-4 text-center">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
+                ok ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
+              }">
+                ${ok ? '✓' : '✕'}
+              </span>
+            </td>
+          `;
+        }).join('');
+
+        return `
+          <tr class="hover:bg-stone-50/80 transition-colors">
+            <td class="py-3 px-4 font-semibold text-stone-900">
+              <div>${escapeHtml(resp.studentName || 'Anônimo')}</div>
+              <div class="text-[10px] text-stone-400 font-normal">${resp.dateStr || ''}</div>
+            </td>
+            ${badges}
+            <td class="py-3 px-4 text-right font-extrabold text-emerald-800">
+              ${resp.score || 0}/5
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // 6. GUARDAR RESPOSTAS NO PC (CSV & JSON)
+    // ==========================================
+    window.downloadResultsCSV = function() {
+      if (classResponses.length === 0) {
+        showToast("Ainda não há respostas para exportar.");
+        return;
+      }
+
+      // Cabeçalho com BOM UTF-8 para abrir corretamente no Excel em Português
+      const headers = ["Aluno", "Data/Hora", "Q1", "Q2", "Q3", "Q4", "Q5", "Total Acertos", "Percentual (%)"];
+      const rows = classResponses.map(r => {
+        const qCols = ['q1', 'q2', 'q3', 'q4', 'q5'].map(k => (r.results && r.results[k]) ? "Acerto" : "Erro");
+        const pct = Math.round(((r.score || 0) / 5) * 100);
+        return [
+          `"${(r.studentName || 'Anônimo').replace(/"/g, '""')}"`,
+          `"${r.dateStr || ''}"`,
+          ...qCols,
+          r.score || 0,
+          `${pct}%`
+        ].join(";");
+      });
+
+      const csvContent = "\uFEFF" + [headers.join(";"), ...rows].join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      triggerFileDownload(blob, `resultados_quiz_ods12_${getTimestampFilename()}.csv`);
+      showToast("Planilha CSV salva no seu computador!");
+    };
+
+    window.downloadResultsJSON = function() {
+      if (classResponses.length === 0) {
+        showToast("Ainda não há respostas para exportar.");
+        return;
+      }
+
+      const exportData = {
+        projeto: "EcoCiclo - ODS 12",
+        exportadoEm: new Date().toISOString(),
+        totalAlunos: classResponses.length,
+        questoes: classQuizQuestions,
+        respostas: classResponses
+      };
+
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+      triggerFileDownload(blob, `backup_quiz_ods12_${getTimestampFilename()}.json`);
+      showToast("Arquivo JSON salvo no seu computador!");
+    };
+
+    function triggerFileDownload(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function getTimestampFilename() {
+      const now = new Date();
+      return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+    }
+
+    // ==========================================
+    // 7. ZERAR DADOS DA TURMA
+    // ==========================================
+    window.confirmClearClassData = function() {
+      if (classResponses.length === 0) {
+        showToast("A lista da turma já está vazia.");
+        return;
+      }
+      toggleModal('modal-confirm-clear');
+    };
+
+    window.executeClearClassData = async function() {
+      toggleModal('modal-confirm-clear');
+      try {
+        if (isCloudConnected && db && currentUser) {
+          const deletePromises = classResponses.map(r =>
+            deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'ecociclo_quiz_responses', r.id))
+          );
+          await Promise.all(deletePromises);
+        }
+        classResponses = [];
+        renderClassDashboard();
+        showToast("Respostas da turma zeradas.");
+      } catch (err) {
+        console.error("Erro ao limpar dados:", err);
+        showToast("Erro ao zerar respostas na nuvem.");
+      }
+    };
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // Inicializar módulo de nuvem e QR Code ao carregar
+    window.addEventListener('DOMContentLoaded', () => {
+      generateClassQRCode();
+      renderStudentQuestions();
+      initCloudQuiz();
+
+      // Se o aluno abriu pelo QR Code (?modo=aluno), abre direto na aba do Quiz em modo aluno
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('modo') === 'aluno') {
+        switchTab('quizturma');
+        setQuizView('student');
+      }
+    });
+  </script>
+
+  <!-- Script das Funcionalidades Originais do EcoCiclo -->
+  <script>
+    // ==========================================
+    // DADOS DO PROTÓTIPO ORIGINAL
+    // ==========================================
+    const checklistData = [
+      {
+        r: "1. Repensar",
+        color: "emerald",
+        items: [
+          { id: "rep1", text: "Faço lista de compras antes de ir ao mercado para evitar compras por impulso.", tip: "Planejar refeições semanais reduz em até 30% o desperdício doméstico." },
+          { id: "rep2", text: "Pesquiso se a marca possui boas práticas ambientais antes de comprar.", tip: "Prefira empresas transparentes e evite o fast fashion." }
+        ]
+      },
+      {
+        r: "2. Recusar",
+        color: "teal",
+        items: [
+          { id: "rec1", text: "Recuso sacolas plásticas descartáveis e levo minha ecobag.", tip: "Deixe uma sacola dobrável sempre dentro da mochila ou do carro." },
+          { id: "rec2", text: "Evito copos, canudos e talheres plásticos de uso único.", tip: "Tenha uma garrafa reutilizável (squeeze) sempre por perto." }
+        ]
+      },
+      {
+        r: "3. Reduzir",
+        color: "cyan",
+        items: [
+          { id: "red1", text: "Controlo o tempo no banho e fecho a torneira ao escovar os dentes.", tip: "Reduzir 5 minutos no banho economiza dezenas de litros de água tratada." },
+          { id: "red2", text: "Apago luzes e tiro aparelhos eletrônicos da tomada quando não estão em uso.", tip: "O modo stand-by pode representar até 12% do consumo elétrico residencial." }
+        ]
+      },
+      {
+        r: "4. Reutilizar",
+        color: "amber",
+        items: [
+          { id: "reu1", text: "Conserto roupas e eletrônicos ou dôo itens em bom estado em vez de jogar fora.", tip: "Brechós e oficinas de reparo prolongam o ciclo de vida dos produtos." },
+          { id: "reu2", text: "Reaproveito potes de vidro e embalagens para armazenar alimentos.", tip: "Potes de vidro são duráveis, atóxicos e infinitamente recicláveis." }
+        ]
+      },
+      {
+        r: "5. Reciclar",
+        color: "lime",
+        items: [
+          { id: "rcy1", text: "Separo o lixo reciclável (papel, plástico, metal, vidro) do resíduo orgânico.", tip: "Lave rapidamente embalagens com restos de comida para não contaminar os recicláveis." },
+          { id: "rcy2", text: "Descarto pilhas, baterias, eletrônicos e óleo de cozinha em pontos de coleta específicos.", tip: "1 litro de óleo descartado na pia pode contaminar até 25 mil litros de água." }
+        ]
+      }
+    ];
+
+    const wasteDatabase = [
+      { name: "Garrafa PET e Embalagens Plásticas", cat: "reciclavel", bin: "Lixeira Vermelha (Plástico)", desc: "Retire o excesso de líquido, amasse para reduzir volume e encaminhe à coleta seletiva.", icon: "fa-bottle-water", color: "rose" },
+      { name: "Papelão e Folhas de Papel", cat: "reciclavel", bin: "Lixeira Azul (Papel)", desc: "Mantenha secos e limpos. Papéis engordurados (como caixas de pizza sujas) devem ir para o orgânico.", icon: "fa-newspaper", color: "blue" },
+      { name: "Latas de Alumínio e Aço", cat: "reciclavel", bin: "Lixeira Amarela (Metal)", desc: "O alumínio é 100% reciclável e economiza até 95% de energia comparado à produção primária.", icon: "fa-can-food", color: "amber" },
+      { name: "Potes e Garrafas de Vidro", cat: "reciclavel", bin: "Lixeira Verde (Vidro)", desc: "Lave bem. Se estiver quebrado, embrulhe em jornal ou caixa de papelão para proteger os coletores.", icon: "fa-wine-bottle", color: "emerald" },
+      { name: "Pilhas, Baterias e Eletrônicos", cat: "especial", bin: "Ponto de Entrega Voluntária (PEV)", desc: "Nunca jogue no lixo comum! Contêm metais pesados. Entregue em supermercados, lojas de telefonia ou ecopontos.", icon: "fa-battery-half", color: "purple" },
+      { name: "Óleo de Cozinha Usado", cat: "especial", bin: "Coleta Especial / Saboaria", desc: "Espere esfriar, armazene em garrafa PET fechada e entregue em postos de coleta para produção de biodiesel ou sabão.", icon: "fa-droplet", color: "orange" },
+      { name: "Restos de Frutas, Legumes e Café", cat: "organico", bin: "Lixeira Marrom / Composteira", desc: "Podem ser transformados em adubo orgânico rico em nutrientes por meio da compostagem doméstica.", icon: "fa-apple-whole", color: "stone" },
+      { name: "Medicamentos Vencidos", cat: "especial", bin: "Farmácias Conveniadas", desc: "Descarte em coletores específicos nas farmácias para evitar contaminação química do solo e dos rios.", icon: "fa-pills", color: "red" },
+      { name: "Isopor (EPS Limpo)", cat: "reciclavel", bin: "Lixeira Vermelha (Plástico)", desc: "O isopor é um tipo de plástico reciclável. Certifique-se de que esteja limpo e sem restos de alimentos.", icon: "fa-box", color: "rose" }
+    ];
+
+    let checkedIds = new Set();
+    let currentWasteCat = 'todos';
+    let currentEconomyMode = 'linear';
+    let quizIndex = 0;
+    let quizScore = 0;
+
+    const wasteQuizQuestions = [
+      {
+        q: "Onde deve ser descartada uma caixa de pizza engordurada com restos de queijo?",
+        options: ["Lixeira Azul (Papel)", "Lixo Orgânico / Rejeito", "Lixeira Vermelha (Plástico)"],
+        correct: 1,
+        explanation: "Papéis engordurados contaminam o processo de reciclagem de papelão e devem ir para o orgânico ou rejeito."
+      },
+      {
+        q: "Qual é o destino correto para óleo de cozinha usado após esfriar?",
+        options: ["Despejar na pia com detergente", "Jogar no vaso sanitário", "Armazenar em garrafa PET e levar a um ponto de coleta"],
+        correct: 2,
+        explanation: "1 litro de óleo pode contaminar até 25 mil litros de água. Em pontos de coleta, ele vira biodiesel ou sabão."
+      },
+      {
+        q: "Pilhas, baterias de celular e lâmpadas fluorescentes devem ir para:",
+        options: ["Logística Reversa / Ecopontos (PEV)", "Lixeira Amarela (Metal)", "Lixo Comum"],
+        correct: 0,
+        explanation: "Contêm metais pesados tóxicos e exigem logística reversa obrigatória em lojas, supermercados ou ecopontos."
+      }
+    ];
+
+    // ==========================================
+    // ECONOMIA LINEAR VS CIRCULAR
+    // ==========================================
+    const economyScenarios = {
+      geral: {
+        linear: [
+          { icon: "fa-mountain", title: "1. Extração Intensiva", desc: "Retirada contínua de matérias-primas virgens, causando desmatamento e esgotamento do solo." },
+          { icon: "fa-industry", title: "2. Produção em Massa", desc: "Foco em baixo custo e obsolescência programada (produtos feitos para durar pouco)." },
+          { icon: "fa-bag-shopping", title: "3. Uso Rápido", desc: "Consumo descartável sem opções fáceis de conserto ou reposição de peças." },
+          { icon: "fa-dumpster-fire", title: "4. Aterros e Poluição", desc: "Toneladas de lixo acumuladas, emissão de metano e contaminação dos oceanos." }
+        ],
+        circular: [
+          { icon: "fa-seedling", title: "1. Insumos Renováveis", desc: "Uso de materiais reciclados, biodegradáveis e energia limpa desde o projeto (Ecodesign)." },
+          { icon: "fa-screwdriver-wrench", title: "2. Durabilidade e Reparo", desc: "Produtos modulares projetados para serem facilmente consertados, atualizados ou compartilhados." },
+          { icon: "fa-rotate", title: "3. Logística Reversa", desc: "Após o uso, os componentes retornam à cadeia produtiva em vez de virarem lixo." },
+          { icon: "fa-infinity", title: "4. Regeneração", desc: "Materiais técnicos são reciclados e resíduos orgânicos voltam como nutrientes para o solo." }
+        ]
+      },
+      smartphone: {
+        linear: [
+          { icon: "fa-gem", title: "1. Mineração de Terras Raras", desc: "Extração de lítio, cobalto e ouro com alto consumo de água e degradação ambiental." },
+          { icon: "fa-microchip", title: "2. Baterias Seladas", desc: "Aparelhos colados que dificultam a troca de bateria ou tela, forçando a compra de um novo." },
+          { icon: "fa-mobile-screen", title: "3. Troca Anual", desc: "Descarte precoce de aparelhos funcionais por apelo estético ou falta de atualizações." },
+          { icon: "fa-radiation", title: "4. Lixo Eletrônico Tóxico", desc: "Metais pesados vazam em lixões contaminando lençóis freáticos." }
+        ],
+        circular: [
+          { icon: "fa-recycle", title: "1. Mineração Urbana", desc: "Ouro, cobre e lítio recuperados de aparelhos antigos substituem a mineração virgem." },
+          { icon: "fa-puzzle-piece", title: "2. Design Modular", desc: "Peças padronizadas permitem trocar apenas a câmera ou bateria em minutos." },
+          { icon: "fa-handshake", title: "3. Recondicionamento", desc: "Aparelhos usados passam por revisão técnica e voltam ao mercado com garantia." },
+          { icon: "fa-truck-ramp-box", title: "4. Coleta em Lojas", desc: "Fabricantes recebem aparelhos antigos para desmontagem segura e reaproveitamento." }
+        ]
+      },
+      roupa: {
+        linear: [
+          { icon: "fa-droplet", title: "1. Cultivo Intensivo", desc: "Uma única camiseta de algodão convencional consome cerca de 2.700 litros de água." },
+          { icon: "fa-flask", title: "2. Tingimento Poluente", desc: "Corantes químicos tóxicos despejados sem tratamento adequado em rios." },
+          { icon: "fa-shirt", title: "3. Fast Fashion", desc: "Roupas de baixa costura usadas poucas vezes e descartadas a cada nova estação." },
+          { icon: "fa-fire", title: "4. Incineração / Aterro", desc: "Toneladas de peças não vendidas ou usadas são queimadas ou enterradas." }
+        ],
+        circular: [
+          { icon: "fa-leaf", title: "1. Fibras Orgânicas e Recicladas", desc: "Uso de algodão certificado, linho ou fibras feitas a partir de garrafas PET." },
+          { icon: "fa-water", title: "2. Tingimento Ecológico", desc: "Pigmentos naturais e sistemas de circuito fechado que reutilizam 95% da água." },
+          { icon: "fa-store", title: "3. Brechós e Aluguel", desc: "Plataformas de segunda mão, troca e reparo multiplicam a vida útil da peça." },
+          { icon: "fa-scissors", title: "4. Desfibramento Têxtil", desc: "Roupas gastas são trituradas e transformadas em novos fios ou mantas acústicas." }
+        ]
+      },
+      garrafa: {
+        linear: [
+          { icon: "fa-oil-well", title: "1. Extração de Petróleo", desc: "Dependência de combustíveis fósseis não renováveis para fabricar resina plástica." },
+          { icon: "fa-bottle-water", title: "2. Uso Único", desc: "Embalagem utilizada por apenas alguns minutos antes de ser descartada." },
+          { icon: "fa-trash", title: "3. Descarte Misturado", desc: "Misturada ao lixo orgânico, perde valor de reciclagem e segue para aterros." },
+          { icon: "fa-water", title: "4. Microplásticos", desc: "Leva mais de 400 anos para se decompor, fragmentando-se nos oceanos." }
+        ],
+        circular: [
+          { icon: "fa-seedling", title: "1. Resina Pós-Consumo", desc: "Garrafas produzidas com 100% de PET reciclado (rPET) ou bioplásticos." },
+          { icon: "fa-fill-drip", title: "2. Refil e Retornáveis", desc: "Sistemas de refil em mercados e garrafas retornáveis higienizadas reduzem embalagens." },
+          { icon: "fa-people-carry-box", title: "3. Cooperativas e PEVs", desc: "Coleta seletiva e máquinas de retorno que recompensam o consumidor." },
+          { icon: "fa-arrows-rotate", title: "4. Garrafa-a-Garrafa", desc: "O material retorna limpo para fabricar novas embalagens indefinidamente." }
+        ]
+      }
+    };
+
+    window.setEconomyMode = function(mode) {
+      currentEconomyMode = mode;
+      const btnLinear = document.getElementById('btn-linear');
+      const btnCircular = document.getElementById('btn-circular');
+      const display = document.getElementById('economy-display');
+      const productKey = document.getElementById('economy-product-select')?.value || 'geral';
+      const steps = economyScenarios[productKey][mode];
+
+      if (mode === 'linear') {
+        btnLinear.className = "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all bg-white text-rose-700 shadow-sm";
+        btnCircular.className = "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all text-stone-600 hover:text-stone-900";
+
+        display.innerHTML = `
+          <div class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-4">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Modelo Insustentável</span>
+                <h3 class="text-xl font-bold text-stone-900">Extrair → Produzir → Descartar</h3>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-xs font-semibold self-start">Alto Impacto Ambiental</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              ${steps.map(s => `
+                <div class="p-4 rounded-xl bg-rose-50/60 border border-rose-200 space-y-2">
+                  <div class="text-rose-600 text-xl"><i class="fa-solid ${s.icon}"></i></div>
+                  <h4 class="font-bold text-sm text-stone-900">${s.title}</h4>
+                  <p class="text-xs text-stone-600 leading-relaxed">${s.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else {
+        btnCircular.className = "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all bg-white text-emerald-700 shadow-sm";
+        btnLinear.className = "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all text-stone-600 hover:text-stone-900";
+
+        display.innerHTML = `
+          <div class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-4">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Modelo Regenerativo</span>
+                <h3 class="text-xl font-bold text-stone-900">Ciclo Fechado de Recursos</h3>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold self-start">Resíduo Zero</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              ${steps.map(s => `
+                <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-2">
+                  <div class="text-emerald-600 text-xl"><i class="fa-solid ${s.icon}"></i></div>
+                  <h4 class="font-bold text-sm text-stone-900">${s.title}</h4>
+                  <p class="text-xs text-stone-600 leading-relaxed">${s.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+    };
+
+    // ==========================================
+    // MINI-QUIZ DE DESCARTE
+    // ==========================================
+    window.startWasteQuiz = function() {
+      quizIndex = 0;
+      quizScore = 0;
+      document.getElementById('waste-quiz-box').classList.remove('hidden');
+      renderQuizStep();
+    };
+
+    window.closeWasteQuiz = function() {
+      document.getElementById('waste-quiz-box').classList.add('hidden');
+    };
+
+    function renderQuizStep() {
+      const qData = wasteQuizQuestions[quizIndex];
+      document.getElementById('quiz-step').textContent = `${quizIndex + 1}/${wasteQuizQuestions.length}`;
+      document.getElementById('quiz-question').textContent = qData.q;
+      const fb = document.getElementById('quiz-feedback');
+      fb.classList.add('hidden');
+
+      document.getElementById('quiz-options').innerHTML = qData.options.map((opt, idx) => `
+        <button onclick="answerWasteQuiz(${idx})" class="quiz-opt-btn text-left p-3.5 rounded-xl bg-white hover:bg-amber-100/60 border border-amber-200 text-xs font-semibold text-stone-800 transition-all">
+          ${opt}
+        </button>
+      `).join('');
+    }
+
+    window.answerWasteQuiz = function(selectedIdx) {
+      const qData = wasteQuizQuestions[quizIndex];
+      const fb = document.getElementById('quiz-feedback');
+      const buttons = document.querySelectorAll('.quiz-opt-btn');
+
+      buttons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === qData.correct) {
+          btn.className = "quiz-opt-btn text-left p-3.5 rounded-xl bg-emerald-600 text-white border border-emerald-700 text-xs font-bold";
+        } else if (idx === selectedIdx) {
+          btn.className = "quiz-opt-btn text-left p-3.5 rounded-xl bg-rose-600 text-white border border-rose-700 text-xs font-bold";
+        }
+      });
+
+      if (selectedIdx === qData.correct) {
+        quizScore++;
+        fb.innerHTML = `<span class="text-emerald-800"><i class="fa-solid fa-circle-check mr-1"></i>Correto! ${qData.explanation}</span>`;
+      } else {
+        fb.innerHTML = `<span class="text-rose-800"><i class="fa-solid fa-circle-xmark mr-1"></i>Atenção: ${qData.explanation}</span>`;
+      }
+      fb.classList.remove('hidden');
+
+      setTimeout(() => {
+        quizIndex++;
+        if (quizIndex < wasteQuizQuestions.length) {
+          renderQuizStep();
+        } else {
+          document.getElementById('quiz-question').textContent = `Desafio concluído! Você acertou ${quizScore} de ${wasteQuizQuestions.length} questões.`;
+          document.getElementById('quiz-options').innerHTML = `
+            <button onclick="startWasteQuiz()" class="px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold">
+              Jogar novamente
+            </button>
+          `;
+          fb.classList.add('hidden');
+        }
+      }, 2600);
+    };
+
+    // ==========================================
+    // NAVEGAÇÃO ENTRE ABAS
+    // ==========================================
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn, .tab-btn-mob').forEach(btn => btn.classList.remove('tab-active'));
+      const navBtn = document.getElementById(`nav-${tabName}`);
+      const mobBtn = document.getElementById(`mob-${tabName}`);
+      if (navBtn) navBtn.classList.add('tab-active');
+      if (mobBtn) mobBtn.classList.add('tab-active');
+    }
+
+    // ==========================================
+    // CALCULADORA DOS 5 Rs
+    // ==========================================
+    function renderChecklist() {
+      const container = document.getElementById('checklist-container');
+      container.innerHTML = checklistData.map(group => `
+        <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-stone-900 text-base">${group.r}</h3>
+            <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              ${group.items.filter(i => checkedIds.has(i.id)).length}/${group.items.length}
+            </span>
+          </div>
+          <div class="space-y-2.5">
+            ${group.items.map(item => {
+              const isChecked = checkedIds.has(item.id);
+              return `
+                <label onclick="toggleCheck('${item.id}')" class="flex items-start gap-3.5 p-3 rounded-xl border cursor-pointer transition-all ${isChecked ? 'bg-emerald-50/70 border-emerald-400' : 'bg-stone-50/60 border-stone-200 hover:bg-stone-100/70'}">
+                  <div class="mt-0.5 w-5 h-5 rounded-md flex items-center justify-center border transition-colors shrink-0 ${isChecked ? 'bg-emerald-600 border-emerald-600 text-white' : 'bg-white border-stone-300'}">
+                    ${isChecked ? '<i class="fa-solid fa-check text-xs"></i>' : ''}
+                  </div>
+                  <span class="text-sm leading-snug ${isChecked ? 'text-stone-900 font-medium' : 'text-stone-700'}">${item.text}</span>
+                </label>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `).join('');
+      updateScore();
+    }
+
+    function toggleCheck(id) {
+      if (checkedIds.has(id)) {
+        checkedIds.delete(id);
+      } else {
+        checkedIds.add(id);
+      }
+      renderChecklist();
+    }
+
+    function resetChecklist() {
+      checkedIds.clear();
+      renderChecklist();
+      showToast('Checklist reiniciado.');
+    }
+
+    function updateScore() {
+      const totalItems = 10;
+      const count = checkedIds.size;
+      const pct = Math.round((count / totalItems) * 100);
+
+      // Atualizar círculo SVG
+      const circumference = 351.8;
+      const offset = circumference - (pct / 100) * circumference;
+      document.getElementById('score-circle').style.strokeDashoffset = offset;
+      document.getElementById('score-percent').textContent = `${pct}%`;
+
+      // Atualizar impacto anual estimado
+      document.getElementById('impact-water').textContent = `${(count * 1450).toLocaleString('pt-BR')} L`;
+      document.getElementById('impact-co2').textContent = `${count * 38} kg`;
+      document.getElementById('impact-plastic').textContent = `${count * 45} un`;
+
+      // Atualizar classificação
+      const titleEl = document.getElementById('score-title');
+      const descEl = document.getElementById('score-desc');
+
+      if (pct === 0) {
+        titleEl.textContent = "Iniciante Consciente";
+        descEl.textContent = "Marque os hábitos que você já pratica para calcular seu índice.";
+      } else if (pct <= 40) {
+        titleEl.textContent = "Primeiros Passos";
+        descEl.textContent = "Você já começou a mudar hábitos! Pequenas escolhas diárias geram grande impacto.";
+      } else if (pct <= 70) {
+        titleEl.textContent = "Consumidor Consciente";
+        descEl.textContent = "Ótimo progresso! Você aplica boa parte dos 5 Rs e reduz significativamente seus resíduos.";
+      } else {
+        titleEl.textContent = "Embaixador(a) Circular";
+        descEl.textContent = "Excelente! Seu estilo de vida está altamente alinhado com o ODS 12 da ONU.";
+      }
+
+      // Sugerir próxima dica de um item não marcado
+      const allItems = checklistData.flatMap(g => g.items);
+      const nextUnchecked = allItems.find(i => !checkedIds.has(i.id));
+      document.getElementById('next-tip').textContent = nextUnchecked
+        ? nextUnchecked.tip
+        : "Parabéns! Você domina todos os 5 Rs. Compartilhe essas práticas com sua comunidade!";
+    }
+
+    // ==========================================
+    // GUIA DE DESCARTE
+    // ==========================================
+    function setWasteCategory(cat) {
+      currentWasteCat = cat;
+      document.querySelectorAll('.waste-cat-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = "waste-cat-btn px-4 py-1.5 rounded-full text-xs font-semibold bg-emerald-600 text-white transition-colors";
+        } else {
+          btn.className = "waste-cat-btn px-4 py-1.5 rounded-full text-xs font-semibold bg-stone-200 text-stone-700 hover:bg-stone-300 transition-colors";
+        }
+      });
+      filterWaste();
+    }
+
+    function filterWaste() {
+      const query = document.getElementById('waste-search').value.toLowerCase().trim();
+      const grid = document.getElementById('waste-grid');
+
+      const filtered = wasteDatabase.filter(item => {
+        const matchCat = currentWasteCat === 'todos' || item.cat === currentWasteCat;
+        const matchQuery = item.name.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query) || item.bin.toLowerCase().includes(query);
+        return matchCat && matchQuery;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-10 bg-white rounded-2xl border border-stone-200">
+            <i class="fa-solid fa-magnifying-glass text-stone-300 text-3xl mb-2"></i>
+            <p class="text-sm text-stone-500">Nenhum resíduo encontrado com esse termo. Tente buscar por "plástico", "pilha" ou "óleo".</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => `
+        <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow">
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg">
+                <i class="fa-solid ${item.icon}"></i>
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-stone-100 text-stone-700">
+                ${item.bin}
+              </span>
+            </div>
+            <h3 class="font-bold text-stone-900 text-base">${item.name}</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">${item.desc}</p>
+          </div>
+        </div>
+      `).join('');
+    };
+
+    // ==========================================
+    // UTILITÁRIOS (MODAL E TOAST)
+    // ==========================================
+    function toggleModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.toggle('hidden');
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3200);
+    }
+
+    // Inicialização
+    window.addEventListener('DOMContentLoaded', () => {
+      renderChecklist();
+      setEconomyMode('linear');
+      filterWaste();
+    });
+  </script>
+</body>
+</html>
